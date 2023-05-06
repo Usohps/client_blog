@@ -8,25 +8,24 @@ function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  // const [error, setError] = useState(false);
+  // const [errorMsg, setErrorMsg] = useState("")
   async function handleLogin(e) {
     e.preventDefault();
-    axios
-      .post(`${process.env.REACT_APP_BASE_URL}/api/user/login`, {
-        email,
-        password,
-      })
-      .then((response) => {
-        const data = response.data.token;
-        console.log(response.data);
-        Login(data);
-        navigate("/home");
-      })
-      .catch((error) => {
-        const errormsg = error.response.data.Error;
-        console.log(errormsg);
-        setError(errormsg);
-      });
+    try {
+     const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/api/user/login`, {email,password, })
+     if(response.status === 200){
+      const data = response.data.token
+      Login(data)
+      navigate("/home")
+      console.log(response.data);
+     }
+    } catch (error) {
+      // setErrorMsg(error.response.data.error);
+      console.log(error.response.data.error);
+      console.log(error)
+        // setError(true);
+    }
   }
 
   return (
@@ -66,11 +65,11 @@ function Login() {
         <div className="w-full p-2 flex flex-col md:items-end items-center">
           <button className="border p-2">LOG IN</button>
         </div>
-        {error && (
+        {/* {error && (
           <span className="border container text-center md:w-[600px] bg-red-500 p-2 text-black font-extrabold">
-            {error}
+            {errorMsg}
           </span>
-        )}
+        )} */}
       </form>
     </div>
   );
